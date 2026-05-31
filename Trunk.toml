@@ -1,0 +1,16 @@
+[build]
+index = "index.html"
+dist = "dist"
+
+[watch]
+watch = ["src"]
+
+[serve]
+port = 8080
+open = true
+
+[tools]
+rustfmt = true
+
+[html]
+minify = false
