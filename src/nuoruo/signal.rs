@@ -1,14 +1,8 @@
-use crate::nuoruo::signal;
-
 
 pub struct SignalFn {
     f: Box<dyn Fn()>,
     id: usize,
 }
-
-
-
-
 pub struct Signal<T> {
     v: T,
     sub: Vec<SignalFn>,
@@ -41,8 +35,20 @@ impl<T> Signal<T> {
         self.sub.push(signal_fn);
         self.id
     }
+    pub fn unsubscribe_by_id_vec(&mut self, ids: Vec<usize>) {
+        self.sub.retain(|x| !ids.contains(&x.id));
+    }
     pub fn unsubscribe(&mut self, id: usize) {
         self.sub.retain(|x| x.id != id);
+    }
+    pub fn unsubscribe_all(&mut self) {
+        self.sub.clear();
+    }
+    pub fn update<F>(&mut self, f: F) where F: FnOnce(&mut T), {
+        f(&mut self.v);
+        for sub in &mut self.sub {
+            (sub.f)();
+        }
     }
 }
 
