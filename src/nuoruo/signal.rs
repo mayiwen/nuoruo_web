@@ -1,4 +1,3 @@
-
 pub struct SignalFn {
     f: Box<dyn Fn()>,
     i: usize,
@@ -28,10 +27,7 @@ impl<T> Signal<T> {
     }
     pub fn subscribe(&mut self, f: Box<dyn Fn()>) -> usize {
         self.i += 1;
-        let signal_fn = SignalFn {
-            f,
-            i: self.i,
-        };
+        let signal_fn = SignalFn { f, i: self.i };
         self.sub.push(signal_fn);
         self.i
     }
@@ -39,12 +35,15 @@ impl<T> Signal<T> {
         self.sub.retain(|x| !ids.contains(&x.i));
     }
     pub fn unsubscribe(&mut self, id: usize) {
-        self.sub.retain(|x| x.i != id);     
+        self.sub.retain(|x| x.i != id);
     }
     pub fn unsubscribe_all(&mut self) {
         self.sub.clear();
     }
-    pub fn update<F>(&mut self, f: F) where F: FnOnce(&mut T), {
+    pub fn update<F>(&mut self, f: F)
+    where
+        F: FnOnce(&mut T),
+    {
         f(&mut self.v);
         for sub in &mut self.sub {
             (sub.f)();
@@ -57,8 +56,6 @@ impl<T> Signal<T> {
 fn test() {
     println!("test");
     let mut s = Signal::new(10);
-    // println!("{:?}", s);
-
     let v = s.get();
     println!("{}", v);
     s.set(20);
