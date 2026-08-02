@@ -1,12 +1,12 @@
 
 pub struct SignalFn {
     f: Box<dyn Fn()>,
-    id: usize,
+    i: usize,
 }
 pub struct Signal<T> {
     v: T,
     sub: Vec<SignalFn>,
-    id: usize,
+    i: usize,
 }
 
 impl<T> Signal<T> {
@@ -14,7 +14,7 @@ impl<T> Signal<T> {
         Self {
             v: t,
             sub: vec![],
-            id: 0,
+            i: 0,
         }
     }
     pub fn get(&self) -> &T {
@@ -27,19 +27,19 @@ impl<T> Signal<T> {
         }
     }
     pub fn subscribe(&mut self, f: Box<dyn Fn()>) -> usize {
-        self.id += 1;
+        self.i += 1;
         let signal_fn = SignalFn {
             f,
-            id: self.id,
+            i: self.i,
         };
         self.sub.push(signal_fn);
-        self.id
+        self.i
     }
     pub fn unsubscribe_by_id_vec(&mut self, ids: Vec<usize>) {
-        self.sub.retain(|x| !ids.contains(&x.id));
+        self.sub.retain(|x| !ids.contains(&x.i));
     }
     pub fn unsubscribe(&mut self, id: usize) {
-        self.sub.retain(|x| x.id != id);
+        self.sub.retain(|x| x.i != id);     
     }
     pub fn unsubscribe_all(&mut self) {
         self.sub.clear();
