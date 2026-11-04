@@ -51,6 +51,12 @@ impl<T> Signal<T> {
     }
 }
 
+impl<T> Drop for Signal<T> {
+    fn drop(&mut self) {
+        self.unsubscribe_all();
+    }
+}
+
 /// 进行基础测试
 #[test]
 fn test() {
@@ -60,5 +66,7 @@ fn test() {
     println!("{}", v);
     s.set(20);
     s.set(30);
+    s.update(|v| *v = *v * 2);
     println!("{}", s.get());
+
 }
